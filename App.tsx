@@ -40,19 +40,27 @@ export default function App() {
       >
         <Text style={styles.header}>HEADER</Text>
       </Animated.View>
-      <Animated.FlatList
+      <Scroller
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollPositionRef } } }],
           { useNativeDriver: true },
         )}
-        scrollEventThrottle={16}
-        data={data}
-        renderItem={({ item: number }) => {
-          return <Text style={styles.row}>{number}</Text>
-        }}
-        keyExtractor={item => item.toString()}
       />
     </View>
+  )
+}
+
+const Scroller = ({ onScroll }: { onScroll: () => void }) => {
+  return (
+    <Animated.FlatList
+      onScroll={onScroll}
+      scrollEventThrottle={16}
+      data={data}
+      renderItem={({ item: number }) => {
+        return <Text style={styles.row}>{number}</Text>
+      }}
+      keyExtractor={item => item.toString()}
+    />
   )
 }
 
