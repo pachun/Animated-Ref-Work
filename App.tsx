@@ -1,6 +1,5 @@
-import { StatusBar } from "expo-status-bar"
 import React from "react"
-import { FlatList, StyleSheet, Text, View } from "react-native"
+import { Animated, FlatList, StyleSheet, Text, View } from "react-native"
 
 const data = [
   1,
@@ -26,17 +25,32 @@ const data = [
 ]
 
 export default function App() {
+  const scrollPositionRef = React.useRef(new Animated.Value(0)).current
+
+  const headerOpacity = scrollPositionRef.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, 1.0],
+    extrapolate: "clamp",
+  })
+
   return (
     <View style={styles.container}>
-      <FlatList
-        onScroll={event =>
-          console.log("y position: " + event.nativeEvent.contentOffset.y)
-        }
+      <Animated.View
+        style={[styles.headerContainer, { opacity: headerOpacity }]}
+      >
+        <Text style={styles.header}>HEADER</Text>
+      </Animated.View>
+      <Animated.FlatList
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollPositionRef } } }],
+          { useNativeDriver: true },
+        )}
         scrollEventThrottle={16}
         data={data}
         renderItem={({ item: number }) => {
           return <Text style={styles.row}>{number}</Text>
         }}
+        keyExtractor={item => item.toString()}
       />
     </View>
   )
@@ -54,5 +68,17 @@ const styles = StyleSheet.create({
     width: "100%",
     borderBottomWidth: 0.5,
     borderBottomColor: "#000",
+  },
+  headerContainer: {
+    width: "100%",
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f00",
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
   },
 })
