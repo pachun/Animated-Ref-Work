@@ -26,7 +26,6 @@ const data = [
 
 export default function App() {
   const scrollPositionRef = React.useRef(new Animated.Value(0)).current
-
   const headerOpacity = scrollPositionRef.interpolate({
     inputRange: [0, 100],
     outputRange: [0, 1.0],
@@ -35,11 +34,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={[styles.headerContainer, { opacity: headerOpacity }]}
-      >
-        <Text style={styles.header}>HEADER</Text>
-      </Animated.View>
+      <Header headerOpacity={headerOpacity} />
       <Scroller
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollPositionRef } } }],
@@ -47,6 +42,14 @@ export default function App() {
         )}
       />
     </View>
+  )
+}
+
+const Header = ({ headerOpacity }: { headerOpacity: any }) => {
+  return (
+    <Animated.View style={[styles.headerContainer, { opacity: headerOpacity }]}>
+      <Text style={styles.header}>HEADER</Text>
+    </Animated.View>
   )
 }
 
